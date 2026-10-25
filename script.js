@@ -69,7 +69,7 @@
       document.body.classList.remove("gate_open");
       enableRevealAnimations();
       window.setTimeout(() => gate?.remove(), reduceMotion ? 0 : 720);
-    }, reduceMotion ? 0 : 580);
+    }, reduceMotion ? 0 : 1350);
   }
 
   byId("open_surprise")?.addEventListener("click", openSurprise);
