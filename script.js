@@ -12,6 +12,9 @@
   const musicToggle = byId("music_toggle");
   const musicPanel = byId("music_panel");
   const musicIframe = byId("youtube_iframe");
+  const giftInput = byId("gift_choice");
+  const giftCustomWrap = byId("gift_custom_wrap");
+  const giftCustomInput = byId("gift_custom");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function localISODate(date = new Date()) {
@@ -177,21 +180,35 @@
     return new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(parsed);
   }
 
+  function updateGiftCustomField() {
+    const showCustomField = giftInput?.value === "Lainnya";
+    giftCustomWrap?.classList.toggle("is_hidden", !showCustomField);
+    if (giftCustomInput) {
+      giftCustomInput.disabled = !showCustomField;
+      giftCustomInput.required = Boolean(showCustomField);
+      if (!showCustomField) giftCustomInput.setCustomValidity("");
+    }
+  }
+
+  giftInput?.addEventListener("change", updateGiftCustomField);
+
   function restoreVouchers() {
     const saved = readSaved(STORAGE_KEY);
     const dateInput = byId("date_plan");
-    const giftInput = byId("gift_choice");
     if (saved?.date && dateInput) dateInput.value = saved.date;
     if (saved?.gift && giftInput && [...giftInput.options].some((option) => option.value === saved.gift)) {
       giftInput.value = saved.gift;
     }
+    if (giftCustomInput) giftCustomInput.value = saved?.giftCustom || "";
+    updateGiftCustomField();
     renderSummary();
   }
 
   function handleVoucherSubmit(event) {
     event.preventDefault();
     const date = byId("date_plan")?.value || "";
-    const gift = byId("gift_choice")?.value || "Skincare";
+    const gift = giftInput?.value || "Skincare";
+    const giftCustom = gift === "Lainnya" ? (giftCustomInput?.value || "").trim() : "";
     const feedback = byId("voucher_feedback");
     if (!date) {
       if (feedback) feedback.textContent = "Pilih satu tanggal dulu yaa, baby. Marugame lanjut es krim, semuanya di hari yang sama! ♡";
@@ -203,12 +220,18 @@
       byId("date_plan")?.focus();
       return;
     }
+    if (gift === "Lainnya" && !giftCustom) {
+      if (feedback) feedback.textContent = "Hadiah apa nih, baby? Isi dulu yaa biar aku nggak salah nebak. ♡";
+      giftCustomInput?.focus();
+      return;
+    }
 
     const savedSuccessfully = writeSaved(STORAGE_KEY, {
       type: "full_date",
       title: "Marugame + Ice Cream Date 🍜🍦",
       date,
       gift,
+      giftCustom,
     });
     renderSummary();
     if (feedback) {
@@ -240,7 +263,10 @@
     const title = document.createElement("strong");
     title.textContent = "Marugame + Ice Cream Date 🍜🍦";
     const detail = document.createElement("span");
-    detail.textContent = `${formatDate(saved.date)} · Marugame lanjut es krim di hari yang sama · pilihan hadiah: ${saved.gift || "Skincare"} · jangan mahal-mahal yaa 😭💛`;
+    const selectedGift = saved.gift === "Lainnya" && saved.giftCustom
+      ? `Lainnya — ${saved.giftCustom}`
+      : (saved.gift || "Skincare");
+    detail.textContent = `${formatDate(saved.date)} · Marugame lanjut es krim di hari yang sama · pilihan hadiah: ${selectedGift} · jangan mahal-mahal yaa 😭💛`;
     const icon = document.createElement("span");
     icon.className = "summary_icon";
     icon.textContent = "🍜🍦🎁";
@@ -259,13 +285,16 @@
       return;
     }
 
+    const selectedGift = saved.gift === "Lainnya" && saved.giftCustom
+      ? `Lainnya — ${saved.giftCustom}`
+      : (saved.gift || "Skincare");
     const lines = [
       "HAAAIII! Aku udah pilih date kita nih 🎀",
       "",
       "🍜🍦 Marugame + Ice Cream Date",
       `Tanggal: ${formatDate(saved.date)}`,
       "🍦 Agenda: Marugame dulu, terus lanjut es krim di hari yang sama.",
-      `🎁 Pilihan hadiah: ${saved.gift || "Skincare"}`,
+      `🎁 Pilihan hadiah: ${selectedGift}`,
       "Note dari pacar: jangan mahal-mahal yaaa 😭💛 Dompet aku juga pengin tetap bahagia hehe ♡",
       "",
       "Siapin perut dan waktu buat quality time sama aku! Makasih, baby ♡",
