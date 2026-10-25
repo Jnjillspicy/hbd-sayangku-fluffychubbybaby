@@ -109,7 +109,7 @@
       card.setAttribute("aria-expanded", String(!expanded));
       card.classList.toggle("is_expanded", !expanded);
       if (reveal) {
-        reveal.textContent = expanded ? "" : card.dataset.note || "Sedikit cinta ekstra buat kamu. ♡";
+        reveal.textContent = expanded ? "" : card.dataset.note || "Sedikit sayang ekstra buat kamu. ♡";
         reveal.setAttribute("aria-hidden", String(expanded));
       }
       if (!expanded) launchConfetti(7);
@@ -194,7 +194,7 @@
     const gift = byId("gift_choice")?.value || "Skincare";
     const feedback = byId("voucher_feedback");
     if (!date) {
-      if (feedback) feedback.textContent = "Pilih satu tanggal dulu yaa, birthday girl. Marugame lanjut es krim, semuanya di hari yang sama! ♡";
+      if (feedback) feedback.textContent = "Pilih satu tanggal dulu yaa, baby. Marugame lanjut es krim, semuanya di hari yang sama! ♡";
       byId("date_plan")?.focus();
       return;
     }
@@ -213,7 +213,7 @@
     renderSummary();
     if (feedback) {
       feedback.textContent = savedSuccessfully
-        ? "Yeayyy! Date kita udah kesimpan 💛 Satu hari, udon dulu terus es krim. Tinggal cocok-cocokin lagi yaa. ♡"
+        ? "Yeayyy! Date kita udah kesimpan 💛 Satu hari, udon dulu terus es krim. Tinggal cocok-cocokin lagi yaa."
         : "Tanggalnya udah dipilih, tapi browser ini nggak bisa nyimpen. Jangan refresh dulu yaa.";
     }
     launchConfetti(18);
@@ -266,9 +266,9 @@
       `Tanggal: ${formatDate(saved.date)}`,
       "🍦 Agenda: Marugame dulu, terus lanjut es krim di hari yang sama.",
       `🎁 Pilihan hadiah: ${saved.gift || "Skincare"}`,
-      "Note dari pacar: jangan mahal-mahal yaaa 😭💛 Dompet aku juga pengin tetap bahagia hehe. ♡",
+      "Note dari pacar: jangan mahal-mahal yaaa 😭💛 Dompet aku juga pengin tetap bahagia hehe ♡",
       "",
-      "Siapin perut dan waktu buat quality time sama aku! Makasih, birthday girl. ♡",
+      "Siapin perut dan waktu buat quality time sama aku! Makasih, baby ♡",
     ];
     const url = WHATSAPP_NUMBER.trim() ? `https://wa.me/${WHATSAPP_NUMBER.trim()}?text=${encodeURIComponent(lines.join("\n"))}` : `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
     if (feedback) {
