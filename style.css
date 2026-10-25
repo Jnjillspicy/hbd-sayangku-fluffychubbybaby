@@ -750,3 +750,115 @@ html { overflow-x: clip; }
 .treat_fields_gift { margin-top: 20px; }
 .gift_note { margin: 9px 0 0; color: #9b8050; font: 600 17px/1.35 var(--hand); transform: rotate(-1deg); }
 .treat_fields_gift select { cursor: pointer; }
+
+
+/* ===== OPENING LETTER ANIMATION ===== */
+
+/* Amplop mengambang pelan saat menunggu diklik */
+.envelope_wrap {
+  animation: envelope_idle_float 4s ease-in-out infinite;
+}
+
+/* Amplop sedikit memantul saat dibuka */
+.envelope_wrap.is_open {
+  animation: envelope_pop_open 0.55s ease-out both;
+}
+
+/* Tutup amplop terbuka ke atas */
+.envelope_wrap.is_open .envelope_flap {
+  transform-origin: top center;
+  backface-visibility: hidden;
+  animation: envelope_flap_open 0.75s
+    cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Surat keluar dari amplop */
+.envelope_wrap.is_open .envelope_letter {
+  animation: envelope_letter_lift 0.95s
+    cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+/* Sparkle muncul di sekitar amplop */
+.envelope_wrap::after {
+  content: "✦  ✧  ♡";
+  position: absolute;
+  top: -22px;
+  right: -26px;
+  color: #c9aa51;
+  font-size: 18px;
+  letter-spacing: 5px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope_wrap.is_open::after {
+  animation: envelope_sparkle_burst 0.9s ease-out
+    0.55s both;
+}
+
+/* ===== KEYFRAMES ===== */
+
+@keyframes envelope_idle_float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+@keyframes envelope_pop_open {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  40% {
+    transform: translateY(-7px) rotate(-1deg);
+  }
+}
+
+@keyframes envelope_flap_open {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+@keyframes envelope_letter_lift {
+  0% {
+    transform: translateY(0) scale(0.96);
+  }
+  65% {
+    transform: translateY(-65px) scale(1.04);
+  }
+  100% {
+    transform: translateY(-52px) scale(1.02);
+  }
+}
+
+@keyframes envelope_sparkle_burst {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.9);
+  }
+}
+
+/* Hormati preferensi pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion: reduce) {
+  .envelope_wrap,
+  .envelope_wrap.is_open,
+  .envelope_wrap.is_open .envelope_flap,
+  .envelope_wrap.is_open .envelope_letter,
+  .envelope_wrap.is_open::after {
+    animation: none !important;
+  }
+}
