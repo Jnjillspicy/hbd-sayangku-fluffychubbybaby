@@ -9,6 +9,9 @@
   const gate = byId("opening_gate");
   const envelopeWrap = document.querySelector(".envelope_wrap");
   const confettiLayer = byId("confetti_layer");
+  const musicToggle = byId("music_toggle");
+  const musicPanel = byId("music_panel");
+  const musicIframe = byId("youtube_iframe");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function localISODate(date = new Date()) {
@@ -62,16 +65,28 @@
     revealItems.forEach((item) => observer.observe(item));
   }
 
+  // Start the hidden YouTube player without opening the visual music panel.
+  // The iframe is loaded during the envelope click, which is the user's gesture.
+  function startBackgroundMusic() {
+    if (!musicIframe || !musicIframe.dataset.src) return false;
+
+    const currentSrc = musicIframe.getAttribute("src");
+    if (!currentSrc || currentSrc === "about:blank") {
+      musicIframe.src = musicIframe.dataset.src;
+    }
+
+    // Keep the music icon animated while the music player remains loaded.
+    musicToggle?.classList.add("is_active");
+    musicToggle?.setAttribute("aria-label", "Buka pemutar musik Kereta Kencan dari HiVi!");
+    return true;
+  }
+
   function openSurprise() {
     const openButton = byId("open_surprise");
     if (openButton) openButton.disabled = true;
     envelopeWrap?.classList.add("is_open");
     launchConfetti(12);
-
-    // Start the song from the same user click that opens the envelope.
-    // The iframe URL already includes autoplay=1 in index.html.
-    openMusicPanel();
-
+    startBackgroundMusic();
     window.setTimeout(
       () => {
         gate?.classList.add("is_open");
@@ -101,14 +116,10 @@
     });
   });
 
-  // The floating music icon opens the embedded HiVi! lyric video after a user click.
-  const musicToggle = byId("music_toggle");
-  const musicPanel = byId("music_panel");
-  const musicIframe = byId("youtube_iframe");
-
+  // The floating music icon opens the visual player; closing it never stops the song.
   function openMusicPanel() {
     if (!musicPanel || !musicToggle || !musicIframe) return;
-    if (musicIframe.src === "about:blank") musicIframe.src = musicIframe.dataset.src;
+    startBackgroundMusic();
     musicPanel.classList.add("is_open");
     musicPanel.setAttribute("aria-hidden", "false");
     musicToggle.classList.add("is_active");
@@ -119,9 +130,8 @@
     if (!musicPanel || !musicToggle) return;
     musicPanel.classList.remove("is_open");
     musicPanel.setAttribute("aria-hidden", "true");
-    musicToggle.classList.remove("is_active");
+    // Keep the audio iframe loaded in the background. Hiding this panel is visual only.
     musicToggle.setAttribute("aria-expanded", "false");
-    if (musicIframe) musicIframe.src = "about:blank";
   }
 
   musicToggle?.addEventListener("click", () => {
