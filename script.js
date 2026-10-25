@@ -289,15 +289,14 @@
       ? `Lainnya — ${saved.giftCustom}`
       : (saved.gift || "Skincare");
     const lines = [
-      "HAAAIII! Aku udah pilih date kita nih 🎀",
+      "HAAAIII SAYANGG! Aku udah pilih date kita nih 🎀",
       "",
       "🍜🍦 Marugame + Ice Cream Date",
       `Tanggal: ${formatDate(saved.date)}`,
       "🍦 Agenda: Marugame dulu, terus lanjut es krim di hari yang sama.",
       `🎁 Pilihan hadiah: ${selectedGift}`,
-      "Note dari pacar: jangan mahal-mahal yaaa 😭💛 Dompet aku juga pengin tetap bahagia hehe ♡",
       "",
-      "Siapin perut dan waktu buat quality time sama aku! Makasih, baby ♡",
+      "Jemput, siapin perut dan waktu buat quality time sama aku! Makasih, baby ♡",
     ];
     const url = WHATSAPP_NUMBER.trim() ? `https://wa.me/${WHATSAPP_NUMBER.trim()}?text=${encodeURIComponent(lines.join("\n"))}` : `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
     if (feedback) {
