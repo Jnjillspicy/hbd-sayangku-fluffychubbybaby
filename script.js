@@ -48,14 +48,17 @@
       revealItems.forEach((item) => item.classList.add("is_revealed"));
       return;
     }
-    const observer = new IntersectionObserver((entries, currentObserver) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is_revealed");
-          currentObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+    const observer = new IntersectionObserver(
+      (entries, currentObserver) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is_revealed");
+            currentObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -35px 0px" },
+    );
     revealItems.forEach((item) => observer.observe(item));
   }
 
@@ -64,12 +67,20 @@
     if (openButton) openButton.disabled = true;
     envelopeWrap?.classList.add("is_open");
     launchConfetti(12);
-    window.setTimeout(() => {
-      gate?.classList.add("is_open");
-      document.body.classList.remove("gate_open");
-      enableRevealAnimations();
-      window.setTimeout(() => gate?.remove(), reduceMotion ? 0 : 720);
-    }, reduceMotion ? 0 : 1350);
+
+    // Start the song from the same user click that opens the envelope.
+    // The iframe URL already includes autoplay=1 in index.html.
+    openMusicPanel();
+
+    window.setTimeout(
+      () => {
+        gate?.classList.add("is_open");
+        document.body.classList.remove("gate_open");
+        enableRevealAnimations();
+        window.setTimeout(() => gate?.remove(), reduceMotion ? 0 : 720);
+      },
+      reduceMotion ? 0 : 1350,
+    );
   }
 
   byId("open_surprise")?.addEventListener("click", openSurprise);
@@ -187,7 +198,7 @@
       type: "full_date",
       title: "Marugame + Ice Cream Date 🍜🍦",
       date,
-      gift
+      gift,
     });
     renderSummary();
     if (feedback) {
@@ -247,15 +258,11 @@
       `🎁 Pilihan hadiah: ${saved.gift || "Skincare"}`,
       "Note dari pacar: jangan mahal-mahal yaaa 😭💛 Dompet aku juga pengin tetap bahagia hehe. ♡",
       "",
-      "Siapin perut dan waktu buat quality time sama aku! Makasih, birthday girl. ♡"
+      "Siapin perut dan waktu buat quality time sama aku! Makasih, birthday girl. ♡",
     ];
-    const url = WHATSAPP_NUMBER.trim()
-      ? `https://wa.me/${WHATSAPP_NUMBER.trim()}?text=${encodeURIComponent(lines.join("\n"))}`
-      : `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
+    const url = WHATSAPP_NUMBER.trim() ? `https://wa.me/${WHATSAPP_NUMBER.trim()}?text=${encodeURIComponent(lines.join("\n"))}` : `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
     if (feedback) {
-      feedback.textContent = WHATSAPP_NUMBER.trim()
-        ? "WhatsApp kebuka dengan pesannya. Cek dulu, terus pencet Send yaa! ♡"
-        : "WhatsApp kebuka nih. Pilih chat aku, terus kirim pesannya yaa. ♡";
+      feedback.textContent = WHATSAPP_NUMBER.trim() ? "WhatsApp kebuka dengan pesannya. Cek dulu, terus pencet Send yaa! ♡" : "WhatsApp kebuka nih. Pilih chat aku, terus kirim pesannya yaa. ♡";
     }
     window.open(url, "_blank", "noopener,noreferrer");
   });
@@ -266,9 +273,13 @@
   });
 
   const backToTop = byId("back_to_top");
-  window.addEventListener("scroll", () => {
-    backToTop?.classList.toggle("is_visible", window.scrollY > 650);
-  }, { passive: true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      backToTop?.classList.toggle("is_visible", window.scrollY > 650);
+    },
+    { passive: true },
+  );
   backToTop?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
 
   setDateMinimums();
