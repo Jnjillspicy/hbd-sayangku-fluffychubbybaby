@@ -3,7 +3,7 @@
 
   // Personalize this number before publishing. Use country code and digits only, e.g. 62812xxxxxxx.
   // Leave empty to let the birthday girl choose a WhatsApp recipient manually.
-  const WHATSAPP_NUMBER = "6285162918684";
+  const WHATSAPP_NUMBER = "6287781220206";
   const STORAGE_KEY = "birthdayLittleWorldDatePlan";
   const byId = (id) => document.getElementById(id);
   const gate = byId("opening_gate");
